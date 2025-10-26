@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: todo-app-backend
+    env: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_KEY
+        value: base64:qNtkrXMnXl/RqZclW6v5r0zdSf2jb1XQN92U9mxWUhU=
+      - key: DB_CONNECTION
+        value: mongodb
+      - key: DB_DSN
+        value: mongodb+srv://dilshan:kpk7MEaEB6S2m5ii@cluster0.vvulqgm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+      - key: DB_DATABASE
+        value: laravel
+      - key: APP_URL
+        value: https://todo-app-backend.onrender.com
