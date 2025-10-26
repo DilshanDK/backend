@@ -16,16 +16,19 @@ RUN pecl install mongodb && docker-php-ext-enable mongodb
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy all files from your computer to container
+# Copy all files
 COPY . .
 
-# Download Composer (PHP package manager)
+# Download Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Enable Apache mod_rewrite (needed for Laravel routing)
+# Copy Apache config
+COPY docker/apache.conf /etc/apache2/sites-available/000-default.conf
+
+# Enable Apache mod_rewrite
 RUN a2enmod rewrite
 
 # Set permissions
