@@ -1,31 +1,38 @@
 FROM php:8.2-apache
 
+# Install dependencies
 RUN apt-get update && apt-get install -y \
     git \
     curl \
     zip \
     unzip \
-    mongodb-clients \
     libssl-dev \
-    pkg-config \
-    && docker-php-ext-install pdo_mysql \
-    && pecl install mongodb \
-    && docker-php-ext-enable mongodb
+    pkg-config
 
+# Install PHP extensions
+RUN docker-php-ext-install pdo_mysql
+RUN pecl install mongodb && docker-php-ext-enable mongodb
+
+# Set working directory
 WORKDIR /var/www/html
 
+# Copy all files from your computer to container
 COPY . .
 
+# Download Composer (PHP package manager)
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+# Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
+# Enable Apache mod_rewrite (needed for Laravel routing)
 RUN a2enmod rewrite
 
-COPY ./docker/apache.conf /etc/apache2/sites-available/000-default.conf
-
+# Set permissions
 RUN chown -R www-data:www-data /var/www/html
 
+# Expose port 8000
 EXPOSE 8000
 
+# Start Apache
 CMD ["apache2ctl", "-D", "FOREGROUND"]
